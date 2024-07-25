@@ -18,7 +18,7 @@ This project is a theater ticket booking system with FastAPI, SQLAlchemy, and Re
 
 1. **Clone the Repository**:
     ```sh
-    git clone <repository-url>
+    git clone git@github.com:pranaybankar/ticketing_system.git
     cd theater_booking
     ```
 
