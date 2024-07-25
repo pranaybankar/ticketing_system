@@ -18,8 +18,10 @@ This project is a theater ticket booking system with FastAPI, SQLAlchemy, and Re
 
 1. **Clone the Repository**:
     ```sh
-    git clone git@github.com:pranaybankar/ticketing_system.git
     cd theater_booking
+    ```
+    ```sh
+    git clone git@github.com:pranaybankar/ticketing_system.git
     ```
 
 2. **Build and Run the Docker Containers**:
