@@ -34,6 +34,7 @@ This project is a theater ticket booking system with FastAPI, SQLAlchemy, and Re
     - The FastAPI application will be available at [http://localhost:8000](http://localhost:8000).
 
 4. **API Endpoints**:
+    - `GET /theaters`: Retrieves all theater information.
     - `GET /theaters/{theaterId}/seats`: Retrieves the current availability of seats for a specified theater.
     - `POST /theaters/{theaterId}/book`: Books a seat for a specified theater.
     - `POST /theaters/{theaterId}/reserve`: Temporarily reserves a seat for a specified theater with an expiry time.
