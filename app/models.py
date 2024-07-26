@@ -19,6 +19,7 @@ class Theater(Base):
 
     seats = relationship("Seat", back_populates="theater")
 
+    # handle cache serialization
     def to_dict(self):
         return {
             'id': self.id,
@@ -39,6 +40,7 @@ class Seat(Base):
 
     theater = relationship("Theater", back_populates="seats")
 
+    # handle cache serialization
     def to_dict(self):
         return {
             'id': self.id,

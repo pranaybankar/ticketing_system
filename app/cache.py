@@ -20,7 +20,6 @@ def get_seats_cache(theater_id: int):
         seats = redis.get(f"theater:{theater_id}:seats")
         if seats:
             list_of_objs = deserialize(seats, models.Seat)
-            logger.info(f"list_of_objs:{list_of_objs}")
             return list_of_objs
         else:
             return None
@@ -28,8 +27,6 @@ def get_seats_cache(theater_id: int):
         logger.error(f"Exception: Not able to get the seats cache. {str(e)}")
 
 def deserialize(serialised_data, class_name):
-    logger.info(f"serialised_data:{serialised_data}")
-    logger.info(f"class_name:{class_name}")
     return [class_name.from_dict(item) for item in json.loads(serialised_data)]
 
 
@@ -37,7 +34,6 @@ def deserialize(serialised_data, class_name):
 def set_seats_cache(theater_id: int, seats):
     try:
         dict_str = serialize(seats)
-        logger.info(f"dict_str:{dict_str}")
         response = redis.set(f"theater:{theater_id}:seats", dict_str)
         logger.info(f"Cache is set. Response:{response}")
     except Exception as e:
@@ -45,6 +41,5 @@ def set_seats_cache(theater_id: int, seats):
 
 # To cache the object 
 def serialize(objects):
-    logger.info(f"serialize:{objects}")
     return json.dumps([obj.to_dict() for obj in objects])
 

@@ -6,17 +6,11 @@
     ------------------------------------------------------------------------------------------------
 """
 
-from pydantic import BaseModel, field_validator
+from pydantic import BaseModel
 
 class SeatBase(BaseModel):
     seat_number: str
     is_booked: bool
-
-    @field_validator('seat_number')
-    def check_alphanumeric(cls, v):
-        if not v.isalnum():
-            raise ValueError('Seat must be alphanumeric.')
-        return v
 
 class SeatCreate(SeatBase):
     pass

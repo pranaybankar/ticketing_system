@@ -44,9 +44,9 @@ def all_theaters(db: Session = Depends(get_db)):
             return JSONResponse(
                 status_code=status.HTTP_400_BAD_REQUEST, 
                 content={
-                    "message":f"No Theaters data available."
-                        f" Please check Database or"
-                        f" The theaters.json file is available in app/data folder or not."})
+                "message":f"No Theaters data available."
+                f" Please check Database or"
+                f" The theaters.json file is available in app/data folder or not."})
     except Exception as e:
         logger.error(f"Exception:{str(e)}")
         return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, 
@@ -54,21 +54,18 @@ def all_theaters(db: Session = Depends(get_db)):
 
 @app.get("/theaters/{theater_id}/seats")
 def theaters_seats(theater_id: int = 1, db: Session = Depends(get_db)):
-    logger.info(f"theater_id: {theater_id}, db:{db}")
     try:
         cached_seats = get_seats_cache(theater_id)
         if cached_seats:
-            logger.info(f"returning from cache:{cached_seats}")
+            logger.debug(f"returning from cache:{cached_seats}")
             return cached_seats
         
         theater = get_theater(db, theater_id)
-        logger.info(f"application theaters_seats theater:{theater}")
         if not theater:
             return JSONResponse(status_code=status.HTTP_404_NOT_FOUND, 
                                 content={"message":"Theater not found"})
 
         seats = get_seats(db, theater_id)
-        logger.info(f"application theaters_seats seats:{seats}")
         set_seats_cache(theater_id, seats)
         return seats
     except Exception as e:
@@ -79,15 +76,13 @@ def theaters_seats(theater_id: int = 1, db: Session = Depends(get_db)):
 
 @app.post("/theaters/{theater_id}/book")
 def book_seats(theater_id: int, seat_number: str, db: Session = Depends(get_db)): 
-    logger.info(f"theater_id: {theater_id}, seat_number: {seat_number}, db:{db}")
     try:
         seats = get_seats(db, theater_id)
-        logger.debug(f"application book_seat seats:{seats}")
         seat = next((s for s in seats if s.seat_number == seat_number), None)
         if not seat:
             no_seat(seats, theater_id)
         if seat.is_booked:
-            is_already_booked(seat)
+            is_already_booked(seat) # idempotent operation
 
         booked_seat = book_seat(db, seat.id)
         logger.info(f"The seat is booked:{booked_seat}")
@@ -114,7 +109,7 @@ def reserve_seats(theater_id: int, seat_number: str, db: Session = Depends(get_d
         if not seat:
             no_seat(seats, theater_id)
         if seat.is_booked:
-            is_already_booked(seat)
+            is_already_booked(seat) # idempotent operation
 
         reserved_seat = reserve_seat(db, seat.id)
         set_seats_cache(theater_id, seats)  # Update cache
@@ -150,7 +145,8 @@ def no_seat(seats, theater_id):
     msg = f"No seats available for booking."
     available_seats = [seat.seat_number for seat in seats if seat.is_booked is False]
     if available_seats:
-        msg = f"Wrong seat number provided. Try these available seats:{available_seats} in theater id: {theater_id}."            
+        msg = (f"Wrong seat number provided. "
+            f"Try these available seats:{available_seats} in theater id: {theater_id}.")
     raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=msg)
 
 def is_already_booked(seat, theater_id):
