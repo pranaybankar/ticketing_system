@@ -48,6 +48,7 @@ This project is a theater ticket booking system with FastAPI, SQLAlchemy, and Re
 - Ensure Docker and Docker Compose are installed on your machine.
 - The application uses Sqlite as the database and Redis for caching.
 - I have used Swagger UI to interact with the APIs.
+- You can update the RESERVATION_TIMEOUT in `docker-compose.yml` file.
 
 This setup ensures your theater ticket booking system is containerized, easy to deploy, and scalable.
 

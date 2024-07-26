@@ -38,7 +38,8 @@ def set_seats_cache(theater_id: int, seats):
     try:
         dict_str = serialize(seats)
         logger.info(f"dict_str:{dict_str}")
-        redis.set(f"theater:{theater_id}:seats", dict_str)
+        response = redis.set(f"theater:{theater_id}:seats", dict_str)
+        logger.info(f"Cache is set. Response:{response}")
     except Exception as e:
         logger.error(f"Exception: Not able to set the seats cache. {str(e)}")
 
