@@ -1,0 +1,11 @@
+[
+    {"id": 1, "seat_number": 1, "is_booked": false, "theater_id": 1},
+    {"id": 2, "seat_number": 2, "is_booked": false, "theater_id": 1},
+    {"id": 3, "seat_number": 3, "is_booked": false, "theater_id": 1},
+    {"id": 4, "seat_number": 4, "is_booked": false, "theater_id": 1},
+    {"id": 5, "seat_number": 1, "is_booked": false, "theater_id": 2},
+    {"id": 6, "seat_number": 2, "is_booked": false, "theater_id": 2},
+    {"id": 7, "seat_number": 3, "is_booked": false, "theater_id": 2},
+    {"id": 8, "seat_number": 4, "is_booked": false, "theater_id": 2}
+  ]
+  

@@ -1,3 +1,11 @@
+"""
+    Date: 25/7/2024
+    Author: Pranay Bankar
+    ------------------------------------------------------------------------------------------------
+    Define the structure of data for validation and serialization when handling API requests and responses.
+    ------------------------------------------------------------------------------------------------
+"""
+
 from pydantic import BaseModel
 
 class SeatBase(BaseModel):
@@ -13,6 +21,14 @@ class Seat(SeatBase):
 
     class Config:
         orm_mode = True
+        schema_extra = {
+            "example": {
+                "id": 1,
+                "seat_number": 1,
+                "is_booked": False,
+                "theater_id": 1
+            }
+        }
 
 class TheaterBase(BaseModel):
     name: str
@@ -26,3 +42,13 @@ class Theater(TheaterBase):
 
     class Config:
         orm_mode = True
+        schema_extra = {
+            "example": {
+                "id": 1,
+                "name": "Theater A",
+                "seats": [
+                    {"id": 1, "seat_number": "A1", "is_booked": False, "theater_id": 1},
+                    {"id": 2, "seat_number": "A2", "is_booked": True, "theater_id": 1}
+                ]
+            }
+        }

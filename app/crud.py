@@ -1,6 +1,13 @@
+"""
+    Date: 25/7/2024
+    Author: Pranay Bankar
+    ------------------------------------------------------------------------------------------------
+    Here we are having methods for CRUD operation
+    ------------------------------------------------------------------------------------------------
+"""
 from sqlalchemy.orm import Session
 import models
-from database import logger
+import json
 
 def get_theater(db: Session, theater_id: int):
     return db.query(models.Theater).filter(models.Theater.id == theater_id).first()
