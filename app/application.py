@@ -82,13 +82,14 @@ def book_seats(theater_id: int, seat_number: str, db: Session = Depends(get_db))
         if not seat:
             no_seat(seats, theater_id)
         if seat.is_booked:
-            is_already_booked(seat) # idempotent operation
+            return is_already_booked(seat, theater_id) # idempotent operation
 
         booked_seat = book_seat(db, seat.id)
-        logger.info(f"The seat is booked:{booked_seat}")
-        set_seats_cache(theater_id, seats)  # Update cache
+        set_seats_cache(theater_id, seats)  # Update 
+        msg = f"The {booked_seat.seat_number} is booked in theater_id:{theater_id}."
+        logger.info(msg)
         return JSONResponse(status_code=status.HTTP_201_CREATED,
-            content={f"message":f"The {booked_seat.seat_number} is booked in theater_id:{theater_id}."})
+            content={f"message":msg})
     except Exception as e:
         logger.error(f"Exception:{str(e)}")
         return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, 
@@ -109,7 +110,7 @@ def reserve_seats(theater_id: int, seat_number: str, db: Session = Depends(get_d
         if not seat:
             no_seat(seats, theater_id)
         if seat.is_booked:
-            is_already_booked(seat) # idempotent operation
+            return is_already_booked(seat, theater_id) # idempotent operation
 
         reserved_seat = reserve_seat(db, seat.id)
         set_seats_cache(theater_id, seats)  # Update cache

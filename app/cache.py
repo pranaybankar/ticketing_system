@@ -41,5 +41,6 @@ def set_seats_cache(theater_id: int, seats):
 
 # To cache the object 
 def serialize(objects):
-    return json.dumps([obj.to_dict() for obj in objects])
+    # we will cache only those object which are not booked
+    return json.dumps([obj.to_dict() for obj in objects if obj.is_booked is False])
 

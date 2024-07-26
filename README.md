@@ -8,7 +8,7 @@ This project is a theater ticket booking system with FastAPI, SQLAlchemy, and Re
 - Check available seats in a theater.
 - Book a seat (idempotent operation).
 - Temporarily reserve a seat with an expiry time.
-- Caching for seat availability.
+- Caching for seat availability. We will cache only those object which are not booked.
 
 ## Requirements
 
