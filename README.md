@@ -46,7 +46,8 @@ This project is a theater ticket booking system with FastAPI, SQLAlchemy, and Re
 
 ### Notes
 - Ensure Docker and Docker Compose are installed on your machine.
-- The application uses PostgreSQL as the database and Redis for caching.
+- The application uses Sqlite as the database and Redis for caching.
+- I have used Swagger UI to interact with the APIs.
 
 This setup ensures your theater ticket booking system is containerized, easy to deploy, and scalable.
 
