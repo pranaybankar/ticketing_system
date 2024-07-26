@@ -37,7 +37,7 @@ This project is a theater ticket booking system with FastAPI, SQLAlchemy, and Re
     - `GET /theaters`: Retrieves all theater information.
     - `GET /theaters/{theaterId}/seats`: Retrieves the current availability of seats for a specified theater.
     - `POST /theaters/{theaterId}/book`: Books a seat for a specified theater.
-    - `POST /theaters/{theaterId}/reserve`: Temporarily reserves a seat for a specified theater with an expiry time.
+    - `POST /theaters/{theaterId}/reserve`: Temporarily reserves a seat for a specified theater with an expiry time of five minutes.
 
 5. **Stopping the Containers**:
     ```sh
