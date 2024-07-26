@@ -38,9 +38,18 @@ def get_db():
 @app.get("/theaters")
 def theaters_seats(db: Session = Depends(get_db)):
     try:
-        return db.query(models.Theater).all()
+        data = db.query(models.Theater).all()
+        if len(data) > 0:
+            return data
+        else: 
+            return JSONResponse(
+                status_code=status.HTTP_400_BAD_REQUEST, 
+                content={
+                    "message":f"No Theaters data available."
+                        f" Please check Database or"
+                        f" The theaters.json file is available in app/data folder or not."})
     except Exception as e:
-        logger.info(f"Exception:{str(e)}")
+        logger.error(f"Exception:{str(e)}")
         traceback.print_exc()
         return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, 
                             content={"message":str(e)})
@@ -65,7 +74,7 @@ def theaters_seats(theater_id: int = 1, db: Session = Depends(get_db)):
         set_seats_cache(theater_id, seats)
         return seats
     except Exception as e:
-        logger.info(f"Exception:{str(e)}")
+        logger.error(f"Exception:{str(e)}")
         traceback.print_exc()
         return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, 
                             content={"message":str(e)})
@@ -87,7 +96,7 @@ def book_seat(theater_id: int, seat_number: str, db: Session = Depends(get_db)):
         set_seats_cache(theater_id, seats)  # Update cache
         return booked_seat
     except Exception as e:
-        logger.info(f"Exception:{str(e)}")
+        logger.error(f"Exception:{str(e)}")
         traceback.print_exc()
         return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, 
                             content={"message":str(e)})
@@ -98,9 +107,13 @@ def reserve_seat(theater_id: int, seat_number: str, db: Session = Depends(get_db
         seats = get_seats(db, theater_id)
         seat = next((s for s in seats if s.seat_number == seat_number), None)
         if not seat:
-            raise HTTPException(status_code=404, detail="Seat not found")
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND, 
+                detail="Seat not found")
         if seat.is_booked:
-            raise HTTPException(status_code=400, detail="Seat already booked")
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST, 
+                detail="Seat already booked")
 
         reserved_seat = reserve_seat(db, seat.id)
         set_seats_cache(theater_id, seats)  # Update cache
@@ -109,7 +122,7 @@ def reserve_seat(theater_id: int, seat_number: str, db: Session = Depends(get_db
         redis.setex(f"reservation:{seat.id}", RESERVATION_TIMEOUT, seat.id)
         return reserved_seat
     except Exception as e:
-        logger.info(f"Exception:{str(e)}")
+        logger.error(f"Exception:{str(e)}")
         traceback.print_exc()
         return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, 
                             content={"message":str(e)})

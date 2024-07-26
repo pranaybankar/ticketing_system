@@ -25,7 +25,7 @@ def get_seats_cache(theater_id: int):
         else:
             return None
     except Exception as e:
-        logger.info(f"Exception: Not able to get the seats cache. {str(e)}")
+        logger.error(f"Exception: Not able to get the seats cache. {str(e)}")
 
 def deserialize(serialised_data, class_name):
     logger.info(f"serialised_data:{serialised_data}")
@@ -40,7 +40,7 @@ def set_seats_cache(theater_id: int, seats):
         logger.info(f"dict_str:{dict_str}")
         redis.set(f"theater:{theater_id}:seats", dict_str)
     except Exception as e:
-        logger.info(f"Exception: Not able to set the seats cache. {str(e)}")
+        logger.error(f"Exception: Not able to set the seats cache. {str(e)}")
 
 # To cache the object 
 def serialize(objects):

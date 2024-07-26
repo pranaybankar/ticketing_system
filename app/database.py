@@ -8,10 +8,13 @@
 
 from os import environ as env 
 import logging
+import os.path
 
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
+from fastapi import status, HTTPException
+from fastapi.responses import JSONResponse
 import pandas as pd
 
 # Configure logging
@@ -30,23 +33,39 @@ engine = create_engine(SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
 
-# Load JSON data into DataFrames
-theaters_df = pd.read_json('data/theaters.json') 
-seats_df = pd.read_json('data/seats.json')
+# save theater data to sqlite db
+def save_to_db(file):
+    name = "theaters"
+    if "seats" in file:
+        name = "seats"
+    try:
+        if os.path.isfile(file):
+            # create a data frame
+            _df = pd.read_json(file)
+        else:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND, 
+                detail=f"The {name}.json file is not available in app/data folder.")             
+    except Exception as e:
+        logger.error(f"Exception:{str(e)}")
+        return JSONResponse(status_code=status.HTTP_404_NOT_FOUND, 
+            content={
+            "message":str(e)
+            })
 
-try:
-    # Bulk insert theaters data
-    with engine.connect() as connection:
-        theaters_df.to_sql('theaters', con=connection, if_exists='replace', index=False)
-        logger.info("Theater data inserted successfully.")
-except Exception as e:
-    logger.info(f"Error. Theater data not inserted. Reason{str(e)}.")
+    try:
+        # Bulk insert data
+        with engine.connect() as connection:
+            # save data from dataframe
+            _df.to_sql(name, con=connection, if_exists='replace', index=False)
+            logger.info(f"The {name} data inserted successfully.")
+    except Exception as e:
+        msg = f"Error. {name} data not inserted. Reason{str(e)}."
+        logger.error(msg)
+        return JSONResponse(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, 
+            content={
+            "message":str(msg)
+            })
 
-try:
-    # Bulk insert seats data
-    with engine.connect() as connection:
-        seats_df.to_sql('seats', con=connection, if_exists='replace', index=False)
-        logger.info("Seat data inserted successfully.")
-except Exception as e:
-    logger.info(f"Error. Seat data not inserted. Reason{str(e)}.")
-
+save_to_db('data/theaters.json')
+save_to_db('data/seats.json')
