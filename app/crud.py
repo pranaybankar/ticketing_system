@@ -30,14 +30,6 @@ def un_reserve_seat(db: Session, seat_id: int):
         db.refresh(seat)
     return seat
 
-def reserve_seat(db: Session, seat_id: int):
-    seat = get_seat(seat_id, db)
-    if seat:
-        seat.is_booked = True
-        db.commit()
-        db.refresh(seat)
-    return seat
-
 def get_seat(seat_id, db):
     return db.query(models.Seat).filter(models.Seat.id == seat_id).first()
 
