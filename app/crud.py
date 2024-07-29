@@ -33,7 +33,7 @@ def un_reserve_seat(db: Session, seat_id: int):
 def reserve_seat(db: Session, seat_id: int):
     seat = get_seat(seat_id, db)
     if seat:
-        seat.is_booked = False
+        seat.is_booked = True
         db.commit()
         db.refresh(seat)
     return seat
