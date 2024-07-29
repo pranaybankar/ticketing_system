@@ -26,26 +26,27 @@ This project is a theater ticket booking system with FastAPI, SQLAlchemy, and Re
     ```
 
 2. **Build and Run the Docker Containers**:
+   - The data is already feeded in SQLITE DB, if you want to update the data please add it in `app/data/theaters.json` and `app/data/seats.json` before running the below commnads.
     ```sh
     docker-compose up --build
     ```
 
-3. **Access the Application**:
+4. **Access the Application**:
     - The FastAPI application will be available at [http://localhost:8000](http://localhost:8000).
 
-4. **API Endpoints**:
+5. **API Endpoints**:
     - `GET /theaters`: Retrieves all theater information.
     - `GET /theaters/{theaterId}/seats`: Retrieves the current availability of seats for a specified theater.
     - `POST /theaters/{theaterId}/book`: Books a seat for a specified theater.
     - `POST /theaters/{theaterId}/reserve`: Temporarily reserves a seat for a specified theater with an expiry time of five minutes.
 
-5. **How to use the API Endpoints**:
+6. **How to use the API Endpoints**:
     - `GET /theaters`: Run this first to retrieves all theatre information. Using this you get to know the Theatre `id` and `name`.
     - `GET /theaters/{theaterId}/seats`: Using the information from the earlier API you can check how many seats are available in the particular theatre. So, you can retrieve the current availability of seats for a specified theatre. So, you will get the `id`, `seat_number`, `is_booked` and `theater_id`.
    - `POST /theaters/{theaterId}/reserve`: To temporarily reserves a seat for a specified theatre provide the Theatre id and the seat number from the earlier API. The seat will be reserved for 5 mins to book. If you make a mistake in providing the seat number the API will return the available seat numbers.
     - `POST /theaters/{theaterId}/book`: Now to book your ticket specify the Theatre Id and the seart number to books a seat for the specified theatre. If you make a mistake in providing the seat number the API will return the available seat numbers.
 
-6. **Stopping the Containers**:
+7. **Stopping the Containers**:
     ```sh
     docker-compose down
     ```
