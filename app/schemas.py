@@ -14,6 +14,12 @@ class SeatBase(BaseModel):
 
 class SeatCreate(SeatBase):
     pass
+    
+class BookSeat(BaseModel):
+    seat_number: str
+
+class ReserveSeat(BaseModel):
+    seat_number: str
 
 class Seat(SeatBase):
     id: int

@@ -4,6 +4,7 @@ services:
   redis:
     image: "redis:6.2-alpine"
     container_name: redis
+    command: ["redis-server", "--notify-keyspace-events", "Ex"] # for redis keyspace notification
     ports:
       - "6379:6379"
 
@@ -12,7 +13,6 @@ services:
       context: .
       dockerfile: Dockerfile
     container_name: web
-    # command: uvicorn app.application:app --host 0.0.0.0 --port 8000
     volumes:
       - ./app:/app
     ports:
