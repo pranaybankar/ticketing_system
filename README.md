@@ -39,7 +39,13 @@ This project is a theater ticket booking system with FastAPI, SQLAlchemy, and Re
     - `POST /theaters/{theaterId}/book`: Books a seat for a specified theater.
     - `POST /theaters/{theaterId}/reserve`: Temporarily reserves a seat for a specified theater with an expiry time of five minutes.
 
-5. **Stopping the Containers**:
+5. **How to use the API Endpoints**:
+    - `GET /theaters`: Run this first to retrieves all theatre information. Using this you get to know the Theatre `id` and `name`.
+    - `GET /theaters/{theaterId}/seats`: Using the information from the earlier API you can check how many seats are available in the particular theatre. So, you can retrieve the current availability of seats for a specified theatre. So, you will get the `id`, `seat_number`, `is_booked` and `theater_id`.
+   - `POST /theaters/{theaterId}/reserve`: To temporarily reserves a seat for a specified theatre provide the Theatre id and the seat number from the earlier API. The seat will be reserved for 5 mins to book. If you make a mistake in providing the seat number the API will return the available seat numbers.
+    - `POST /theaters/{theaterId}/book`: Now to book your ticket specify the Theatre Id and the seart number to books a seat for the specified theatre. If you make a mistake in providing the seat number the API will return the available seat numbers.
+
+6. **Stopping the Containers**:
     ```sh
     docker-compose down
     ```
