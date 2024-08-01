@@ -59,7 +59,7 @@ def all_theaters(db: Session = Depends(get_db)):
 @app.get("/theaters/{theater_id}/seats")
 def theaters_seats(theater_id: int = 1, db: Session = Depends(get_db)):
     try:
-        cached_seats = get_seats_cache(theater_id)
+        cached_seats = get_seats_cache(theater_id, models.Seat)
         if cached_seats:
             logger.debug(f"returning from cache:{cached_seats}")
             return cached_seats
@@ -77,30 +77,6 @@ def theaters_seats(theater_id: int = 1, db: Session = Depends(get_db)):
         seats = get_seats(db, theater_id)
         set_seats_cache(theater_id, seats)
         return seats
-    except Exception as e:
-        logger.error(f"Exception:{str(e)}")
-        return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST,
-                            content={"message":str(e)})
-
-
-@app.post("/theaters/{theater_id}/book")
-def book_seats(theater_id: int, seat: schemas.BookSeat, db: Session = Depends(get_db)):
-    try:
-        # pydentic way of getting the body payload for seat
-        seat_number = seat.seat_number
-        seats = get_seats(db, theater_id)
-        seat = next((s for s in seats if s.seat_number == seat_number), None)
-        if not seat:
-            no_seat(seats, theater_id)
-        if seat.is_booked:
-            return is_already_booked(seat, theater_id) # idempotent operation
-
-        booked_seat = book_or_reserve_seat(db, seat.id)
-        set_seats_cache(theater_id, seats)  # Update
-        msg = f"The {booked_seat.seat_number} is booked in theater_id:{theater_id}."
-        logger.info(msg)
-        return JSONResponse(status_code=status.HTTP_201_CREATED,
-            content={f"message":msg})
     except Exception as e:
         logger.error(f"Exception:{str(e)}")
         return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST,
@@ -133,6 +109,29 @@ def reserve_seats(theater_id: int, seat: schemas.ReserveSeat, db: Session = Depe
         return JSONResponse(status_code=status.HTTP_201_CREATED,
             content={f"message":f"The {reserved_seat.seat_number} "
                      f"is reserved in theater_id:{theater_id}."})
+    except Exception as e:
+        logger.error(f"Exception:{str(e)}")
+        return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST,
+                            content={"message":str(e)})
+
+@app.post("/theaters/{theater_id}/book")
+def book_seats(theater_id: int, seat: schemas.BookSeat, db: Session = Depends(get_db)):
+    try:
+        # pydentic way of getting the body payload for seat
+        seat_number = seat.seat_number
+        seats = get_seats(db, theater_id)
+        seat = next((s for s in seats if s.seat_number == seat_number), None)
+        if not seat:
+            no_seat(seats, theater_id)
+        if seat.is_booked:
+            return is_already_booked(seat, theater_id) # idempotent operation
+
+        booked_seat = book_or_reserve_seat(db, seat.id)
+        set_seats_cache(theater_id, seats)  # Update
+        msg = f"The {booked_seat.seat_number} is booked in theater_id:{theater_id}."
+        logger.info(msg)
+        return JSONResponse(status_code=status.HTTP_201_CREATED,
+            content={f"message":msg})
     except Exception as e:
         logger.error(f"Exception:{str(e)}")
         return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST,

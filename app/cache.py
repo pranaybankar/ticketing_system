@@ -15,17 +15,18 @@ from database import logger
 redis = Redis(host="redis", port=6379, db=0, decode_responses=True)
 
 # get cache
-def get_seats_cache(theater_id: int):
+def get_seats_cache(theater_id: int, class_name):
     try:
         seats = redis.get(f"theater:{theater_id}:seats")
         if seats:
-            list_of_objs = deserialize(seats, models.Seat)
+            list_of_objs = deserialize(seats, class_name)
             return list_of_objs
         else:
             return None
     except Exception as e:
         logger.error(f"Exception: Not able to get the seats cache. {str(e)}")
 
+# convert the Json formated string to class object
 def deserialize(serialised_data, class_name):
     return [class_name.from_dict(item) for item in json.loads(serialised_data)]
 
@@ -39,7 +40,7 @@ def set_seats_cache(theater_id: int, seats):
     except Exception as e:
         logger.error(f"Exception: Not able to set the seats cache. {str(e)}")
 
-# To cache the object 
+# convert the class object to Json formated string
 def serialize(objects):
     # we will cache only those object which are not booked
     return json.dumps([obj.to_dict() for obj in objects if obj.is_booked is False])
