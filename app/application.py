@@ -46,7 +46,7 @@ def all_theaters(db: Session = Depends(get_db)):
             return data
         else:
             return JSONResponse(
-                status_code=status.HTTP_400_BAD_REQUEST,
+                status_code=status.HTTP_404_NOT_FOUND,
                 content={
                 "message":f"No Theaters data available."
                 f" Please check Database or"
